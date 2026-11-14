@@ -1,0 +1,37 @@
+[
+  {
+    "name": "weeknight_chicken_broccoli",
+    "data": [
+      {
+        "query": "I have chicken, broccoli, and garlic. Plan a quick dinner.",
+        "expected_tool_use": [
+          {
+            "tool_name": "generate_recipe_from_ingredients",
+            "tool_input": {
+              "ingredients": ["chicken", "broccoli", "garlic"]
+            }
+          }
+        ],
+        "reference": "Savory Skillet Chicken & Broccoli"
+      }
+    ]
+  },
+  {
+    "name": "vegan_gluten_free_audit",
+    "data": [
+      {
+        "query": "I am vegan and gluten-free. Check if butter, soy sauce, and tofu are safe.",
+        "expected_tool_use": [
+          {
+            "tool_name": "check_dietary_compliance",
+            "tool_input": {
+              "ingredients": ["butter", "soy sauce", "tofu"],
+              "restrictions": ["vegan", "gluten-free"]
+            }
+          }
+        ],
+        "reference": "Butter and soy sauce conflict with vegan and gluten-free diets; substitute olive oil and tamari."
+      }
+    ]
+  }
+]

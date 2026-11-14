@@ -1,0 +1,41 @@
+name: dinner-planning-agent-v2
+version: 2.0.0
+entrypoint: dinner_agent.agent:root_agent
+description: >
+  Production multi-agent Concierge Dinner Planner built on Google ADK with
+  Pydantic JSON schemas, persistent DatabaseSessionService, async memory compaction,
+  OpenTelemetry tracing, PII redaction, guardrails, and Human-in-the-Loop approvals.
+
+models:
+  coordinator: gemini-2.5-flash
+  culinary_recipe_chef: gemini-2.5-flash
+  nutrition_dietary_specialist: gemini-2.5-pro
+
+memory:
+  session_backend: DatabaseSessionService
+  default_session_uri: sqlite+aiosqlite:///./dinner_sessions.db
+  long_term_memory: InMemoryMemoryService
+  compaction_strategy: async_sliding_window_with_summary
+  max_history_turns: 8
+  retained_recent_turns: 4
+
+orchestration:
+  pattern: hierarchical_coordinator_sub_agents
+  guardrails:
+    - input_safety_guardrail
+    - tool_policy_and_hitl_callback
+  human_in_the_loop:
+    tool: order_missing_groceries
+    require_confirmation: true
+    high_cost_threshold_usd: 50.0
+
+observability:
+  structured_logger: structlog
+  log_format: json
+  tracing: opentelemetry
+  pii_redaction: true
+
+security:
+  secret_env_vars:
+    - GEMINI_API_KEY
+    - SESSION_DB_URL
